@@ -10,6 +10,7 @@ After  this fix : 100% of responses match the schema (or raise a clear error).
 """
 
 import json
+import os
 from openai import OpenAI
 from pathlib import Path
 from dotenv import load_dotenv
@@ -71,7 +72,7 @@ def analyze_review(review_text: str) -> dict:
     is always found in the tool_calls — never in free-form text.
     """
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model=os.getenv("OPENAI_MODEL", "gpt-4o"),
         max_tokens=1024,
         tools=[REVIEW_ANALYSIS_TOOL],
         # tool_choice forces the model to call our specific function

@@ -14,6 +14,7 @@ sentiment value that slipped past the enum. This file adds:
 
 import json
 import logging
+import os
 from typing import Optional
 from openai import OpenAI
 from pathlib import Path
@@ -112,7 +113,7 @@ def validate_output(data: dict) -> tuple[bool, list[str]]:
 def _call_model(messages: list) -> Optional[dict]:
     """Single model call; returns the tool input dict or None."""
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model=os.getenv("OPENAI_MODEL", "gpt-4o"),
         max_tokens=1024,
         tools=[REVIEW_TOOL],
         tool_choice={"type": "function", "function": {"name": "submit_review_analysis"}},

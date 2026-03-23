@@ -11,6 +11,7 @@ The three simulated responses below show what a "Be helpful" system
 prompt produces for the same question asked three different times.
 """
 
+import os
 from openai import OpenAI
 from pathlib import Path
 from dotenv import load_dotenv
@@ -28,7 +29,7 @@ CUSTOMER_QUESTION = "Can I get a refund?"
 def ask_generic_bot(question: str, run_label: str) -> str:
     """Send a question with no real system prompt. Watch the chaos."""
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model=os.getenv("OPENAI_MODEL", "gpt-4o"),
         max_tokens=300,
         messages=[
             {"role": "system", "content": VAGUE_SYSTEM_PROMPT},

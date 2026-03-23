@@ -17,6 +17,7 @@ outputs and synthesises a unified report. Only the merge needs to wait.
 """
 
 import json
+import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Callable
 from openai import OpenAI
@@ -57,7 +58,7 @@ Each lasted 2-4 hours. This is completely unacceptable for our SLAs.
 def analyse_ux_issues(feedback: str) -> str:
     """Specialist: UX and usability pain points only."""
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model=os.getenv("OPENAI_MODEL", "gpt-4o"),
         max_tokens=800,
         messages=[
             {
@@ -80,7 +81,7 @@ def analyse_ux_issues(feedback: str) -> str:
 def analyse_performance_issues(feedback: str) -> str:
     """Specialist: Performance, reliability, and stability issues only."""
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model=os.getenv("OPENAI_MODEL", "gpt-4o"),
         max_tokens=800,
         messages=[
             {
@@ -104,7 +105,7 @@ def analyse_performance_issues(feedback: str) -> str:
 def analyse_feature_requests(feedback: str) -> str:
     """Specialist: Feature gaps and product requests only."""
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model=os.getenv("OPENAI_MODEL", "gpt-4o"),
         max_tokens=800,
         messages=[
             {
@@ -144,7 +145,7 @@ FEATURE REQUEST ANALYSIS:
 {features}
 """
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model=os.getenv("OPENAI_MODEL", "gpt-4o"),
         max_tokens=1500,
         messages=[
             {

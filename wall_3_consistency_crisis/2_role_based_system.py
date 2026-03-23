@@ -19,6 +19,7 @@ With this prompt, the same question gets the same answer every time:
 correct policy, consistent tone, no invented details.
 """
 
+import os
 from openai import OpenAI
 from pathlib import Path
 from dotenv import load_dotenv
@@ -71,7 +72,7 @@ SLA                 : Enterprise plan guarantees 99.9% uptime. SMB plan has
 def ask_techcorp_bot(question: str) -> str:
     """Ask Alex a question and get a consistent, policy-grounded response."""
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model=os.getenv("OPENAI_MODEL", "gpt-4o"),
         max_tokens=400,
         messages=[
             {"role": "system", "content": TECHCORP_SYSTEM_PROMPT},

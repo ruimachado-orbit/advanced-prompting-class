@@ -14,6 +14,7 @@ assertion. Anything below ~90% signals a fragile behaviour that needs
 a tighter system prompt before going to production.
 """
 
+import os
 import re
 import time
 from dataclasses import dataclass, field
@@ -139,7 +140,7 @@ class RunResult:
 def ask_bot(question: str) -> str:
     """Single call to the TechCorp bot."""
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model=os.getenv("OPENAI_MODEL", "gpt-4o"),
         max_tokens=400,
         messages=[
             {"role": "system", "content": TECHCORP_SYSTEM_PROMPT},

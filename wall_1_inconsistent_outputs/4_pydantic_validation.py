@@ -20,6 +20,7 @@ Run:
 """
 
 import json
+import os
 from openai import OpenAI
 from pathlib import Path
 from dotenv import load_dotenv
@@ -94,7 +95,7 @@ def extract_event_details(raw_request: str) -> EventBookingOutput:
     bad data reaches your database.
     """
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model=os.getenv("OPENAI_MODEL", "gpt-4o"),
         max_tokens=512,
         tools=[EVENT_BOOKING_TOOL],
         tool_choice={"type": "function", "function": {"name": "submit_event_booking"}},

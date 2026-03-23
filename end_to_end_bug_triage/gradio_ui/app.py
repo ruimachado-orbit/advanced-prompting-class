@@ -88,8 +88,8 @@ EXTRACT_TOOL = {
             "properties": {
                 "title":        {"type": "string",  "description": "Short bug title (max 80 chars)"},
                 "component":    {"type": "string",  "description": "Affected component or service"},
-                "environment":  {"type": "string",  "description": "Where it happens: production/staging/local/unknown"},
-                "steps":        {"type": "array",   "items": {"type": "string"}, "description": "Reproduction steps as a list"},
+                "environment":  {"type": "string",  "description": "All context the reporter gave: OS, browser(s), account tier/plan, staging vs production, device. Include everything mentioned, even if partial."},
+                "steps":        {"type": "array",   "items": {"type": "string"}, "description": "Detailed reproduction steps including what was tried, what worked, what failed, and any workarounds the reporter discovered."},
                 "actual":       {"type": "string",  "description": "What actually happens"},
                 "expected":     {"type": "string",  "description": "What should happen instead"},
                 "affects_data": {"type": "boolean", "description": "Does this cause data loss or corruption?"},
@@ -103,7 +103,7 @@ EXTRACT_TOOL = {
 
 def step1_extract(raw_report: str) -> dict:
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model=os.getenv("OPENAI_MODEL", "gpt-4o"),
         max_tokens=1024,
         tools=[EXTRACT_TOOL],
         tool_choice={"type": "function", "function": {"name": "submit_extracted_bug"}},
@@ -122,7 +122,7 @@ def step1_extract(raw_report: str) -> dict:
 
 def step2_analyse(extracted: dict) -> dict:
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model=os.getenv("OPENAI_MODEL", "gpt-4o"),
         max_tokens=512,
         tools=[{
             "type": "function",
@@ -158,7 +158,7 @@ def step2_analyse(extracted: dict) -> dict:
 
 def step3_write_ticket(extracted: dict, analysis: dict) -> str:
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model=os.getenv("OPENAI_MODEL", "gpt-4o"),
         max_tokens=600,
         messages=[
             {"role": "system", "content": TRIAGE_AGENT_ROLE},
@@ -252,7 +252,7 @@ STEP1_CODE = textwrap.dedent("""\
     }
 
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model=os.getenv("OPENAI_MODEL", "gpt-4o"),
         max_tokens=1024,
         tools=[EXTRACT_TOOL],
         tool_choice={"type": "function",
@@ -293,7 +293,7 @@ STEP2_CODE = textwrap.dedent("""\
     }
 
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model=os.getenv("OPENAI_MODEL", "gpt-4o"),
         max_tokens=512,
         tools=[ANALYSIS_TOOL],
         tool_choice={"type": "function",
@@ -340,7 +340,7 @@ STEP3_CODE = textwrap.dedent("""\
     \"\"\"
 
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model=os.getenv("OPENAI_MODEL", "gpt-4o"),
         max_tokens=600,
         messages=[
             {"role": "system", "content": TRIAGE_AGENT_ROLE},

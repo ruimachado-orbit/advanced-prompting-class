@@ -8,6 +8,7 @@ the model returns another, and your app crashes in production.
 Run this file to see the inconsistency problem in action.
 """
 
+import os
 from openai import OpenAI
 from pathlib import Path
 from dotenv import load_dotenv
@@ -77,7 +78,7 @@ def analyze_review_broken(review_text: str) -> dict:
     the exact JSON shape we need. It won't — not reliably.
     """
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model=os.getenv("OPENAI_MODEL", "gpt-4o"),
         max_tokens=512,
         messages=[
             {

@@ -20,6 +20,7 @@ Quality comparison:
 """
 
 import json
+import os
 from openai import OpenAI
 from pathlib import Path
 from dotenv import load_dotenv
@@ -62,7 +63,7 @@ def step1_extract_themes(feedback: str) -> str:
     This produces a clean, structured intermediate artefact.
     """
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model=os.getenv("OPENAI_MODEL", "gpt-4o"),
         max_tokens=1024,
         messages=[
             {
@@ -96,7 +97,7 @@ def step2_analyse_themes(extracted_themes: str) -> str:
     It never has to re-read raw feedback — the extraction already did that.
     """
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model=os.getenv("OPENAI_MODEL", "gpt-4o"),
         max_tokens=1500,
         messages=[
             {
@@ -133,7 +134,7 @@ def step3_synthesise_summary(analysis: str) -> str:
     was done in the previous steps.
     """
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model=os.getenv("OPENAI_MODEL", "gpt-4o"),
         max_tokens=1500,
         messages=[
             {
