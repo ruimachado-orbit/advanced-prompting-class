@@ -97,7 +97,7 @@ complaints to improve overall satisfaction and reduce churn risk.
 
 if __name__ == "__main__":
     print("=== Single-Shot Version: One Prompt Does Everything ===\n")
-    print("Sending one mega-prompt to Claude...\n")
+    print("Sending one mega-prompt to LLM...\n")
 
     result = analyze_feedback_single_shot(CUSTOMER_FEEDBACK)
 
