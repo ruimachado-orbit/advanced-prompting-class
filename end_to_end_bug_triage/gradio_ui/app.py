@@ -197,30 +197,30 @@ def clear_cache():
 
 def triage(raw_report: str):
     if not raw_report.strip():
-        yield "", "", "", ""
+        yield None, None, "", ""
         return
 
     key = _cache_key(raw_report)
     if key in _cache:
         cached = _cache[key]
-        yield cached["extracted"], cached["analysis"], cached["ticket"], "⚡ Served from cache"
+        yield json.loads(cached["extracted"]), json.loads(cached["analysis"]), cached["ticket"], "⚡ Served from cache"
         return
 
-    yield "Extracting structured fields...", "", "", "🔄 Calling API..."
+    yield None, None, "", "🔄 Step 1 — Extracting..."
     extracted = step1_extract(raw_report)
     extracted_str = json.dumps(extracted, indent=2)
 
-    yield extracted_str, "Analysing severity and priority...", "", "🔄 Calling API..."
+    yield extracted, None, "", "🔄 Step 2 — Analysing..."
     analysis = step2_analyse(extracted)
     analysis_str = json.dumps(analysis, indent=2)
 
-    yield extracted_str, analysis_str, "Writing ticket...", "🔄 Calling API..."
+    yield extracted, analysis, "Writing ticket...", "🔄 Step 3 — Writing ticket..."
     ticket = step3_write_ticket(extracted, analysis)
 
     _cache[key] = {"extracted": extracted_str, "analysis": analysis_str, "ticket": ticket}
     _save_cache(_cache)
 
-    yield extracted_str, analysis_str, ticket, "✅ Done — result cached"
+    yield extracted, analysis, ticket, "✅ Done — result cached"
 
 
 # ── Code snippets for the "Show Code" panels ────────────────────────────────
